@@ -154,7 +154,11 @@ function AnimatedHeartFlower({
   )
 }
 
-export function HeartFlowerAnimation() {
+export function HeartFlowerAnimation({
+  finalImageUrl,
+}: {
+  finalImageUrl?: string
+}) {
   const reduceMotion = useReducedMotion()
   const [phase, setPhase] = useState<Phase>('exploding')
   const [mediaActive, setMediaActive] = useState(false)
@@ -167,14 +171,15 @@ export function HeartFlowerAnimation() {
   useEffect(() => {
     if (reduceMotion) {
       setPhase('forming')
-      const mediaTimer = window.setTimeout(() => setMediaActive(true), 350)
+      const mediaTimer = window.setTimeout(() => setMediaActive(true), 700)
       return () => window.clearTimeout(mediaTimer)
     }
 
     setPhase('exploding')
 
     const formTimer = window.setTimeout(() => setPhase('forming'), 1100)
-    const mediaTimer = window.setTimeout(() => setMediaActive(true), 2000)
+    // Reveal photo after the heart has mostly settled.
+    const mediaTimer = window.setTimeout(() => setMediaActive(true), 2600)
 
     return () => {
       window.clearTimeout(formTimer)
@@ -195,7 +200,7 @@ export function HeartFlowerAnimation() {
         ))}
       </div>
 
-      <FinalMedia active={mediaActive} />
+      <FinalMedia active={mediaActive} finalImageUrl={finalImageUrl} />
     </div>
   )
 }

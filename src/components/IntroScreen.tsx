@@ -22,7 +22,7 @@ export function IntroScreen({ onStart }: IntroScreenProps) {
         type="button"
         className="intro-button"
         onClick={onStart}
-        aria-label="Hoy es un día para regalar flores amarillas. Toca la pantalla para comenzar."
+        aria-label="Dale 5 clicks a la pantalla para comenzar la experiencia de flores amarillas."
       >
         <motion.div
           className="intro-content"
@@ -45,11 +45,8 @@ export function IntroScreen({ onStart }: IntroScreenProps) {
               </g>
             </svg>
           </span>
-          <h1 className="intro-title">
-            Hoy es un día para regalar flores amarillas{' '}
-            <span aria-hidden="true">🌻</span>
-          </h1>
-          <span className="intro-hint">Toca la pantalla</span>
+          <h1 className="intro-title">Dale 5 clicks a la pantalla</h1>
+          <span className="intro-hint">Toca para comenzar</span>
         </motion.div>
       </button>
     </motion.div>

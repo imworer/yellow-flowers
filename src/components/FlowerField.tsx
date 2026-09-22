@@ -6,6 +6,7 @@ import { HeartFlowerAnimation } from './HeartFlowerAnimation'
 
 type FlowerFieldProps = {
   enabled: boolean
+  finalImageUrl?: string
 }
 
 const FINALE_CLICK = 5
@@ -24,11 +25,12 @@ function createFlower(x: number, y: number): FlowerData {
   }
 }
 
-export function FlowerField({ enabled }: FlowerFieldProps) {
+export function FlowerField({ enabled, finalImageUrl }: FlowerFieldProps) {
   const fieldRef = useRef<HTMLDivElement>(null)
   const clickCountRef = useRef(0)
   const hasTriggeredFinaleRef = useRef(false)
   const [flowers, setFlowers] = useState<FlowerData[]>([])
+  const [clickCount, setClickCount] = useState(0)
   const [hasTriggeredFinale, setHasTriggeredFinale] = useState(false)
 
   const handlePointerDown = useCallback(
@@ -49,18 +51,21 @@ export function FlowerField({ enabled }: FlowerFieldProps) {
       const y = event.clientY - rect.top
 
       clickCountRef.current += 1
-      setFlowers((current) => [...current, createFlower(x, y)])
+      const nextCount = clickCountRef.current
 
-      if (
-        clickCountRef.current === FINALE_CLICK &&
-        !hasTriggeredFinaleRef.current
-      ) {
+      setFlowers((current) => [...current, createFlower(x, y)])
+      setClickCount(nextCount)
+
+      if (nextCount === FINALE_CLICK && !hasTriggeredFinaleRef.current) {
         hasTriggeredFinaleRef.current = true
         setHasTriggeredFinale(true)
       }
     },
     [enabled],
   )
+
+  const showCounter =
+    enabled && clickCount > 0 && clickCount < FINALE_CLICK && !hasTriggeredFinale
 
   return (
     <div
@@ -76,7 +81,15 @@ export function FlowerField({ enabled }: FlowerFieldProps) {
         ))}
       </div>
 
-      {hasTriggeredFinale ? <HeartFlowerAnimation /> : null}
+      {showCounter ? (
+        <p className="click-progress" aria-live="polite">
+          {clickCount} / {FINALE_CLICK}
+        </p>
+      ) : null}
+
+      {hasTriggeredFinale ? (
+        <HeartFlowerAnimation finalImageUrl={finalImageUrl} />
+      ) : null}
     </div>
   )
 }
